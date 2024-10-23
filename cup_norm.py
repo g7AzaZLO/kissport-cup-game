@@ -8,7 +8,7 @@ def main():
 
         # Set constants for L and G
         L = 30  # Cup position
-        G = 5   # Gravity
+        G = 5  # Gravity
 
         # Print game information
         print(f"THE CUP IS 30 LINES DOWN AND  {L}  SPACES OVER.")
@@ -52,15 +52,15 @@ def main():
 
             # Check for hitting the cup
             if (IX == 29 and IY == L) or \
-               (IX + 1 == 29 and IY + 1 == L) or \
-               (IX == 29 and IY == L - 1) or \
-               (IX + 1 == 29 and IY + 1 == L - 1):
+                    (IX + 1 == 29 and IY + 1 == L) or \
+                    (IX == 29 and IY == L - 1) or \
+                    (IX + 1 == 29 and IY + 1 == L - 1):
                 W = 1
                 S[29][L] = 2
                 break
 
             if (IX == 29 and IY == L + 1) or \
-               (IX + 1 == 29 and IY + 1 == L + 1):
+                    (IX + 1 == 29 and IY + 1 == L + 1):
                 W = 2
                 S[29][L] = 2
                 break
@@ -128,6 +128,7 @@ def main():
             continue  # Start over
         else:
             break  # End game
+
 
 if __name__ == "__main__":
     main()

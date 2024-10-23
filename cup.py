@@ -1,137 +1,139 @@
-# cup.py
-
 import random
-import math
 
 
 def main():
     while True:
+        # Print header
         print(' ' * 27 + 'CUP')
         print(' ' * 20 + 'CREATIVE COMPUTING')
         print(' ' * 18 + 'MORRISTOWN, NEW JERSEY')
-        print('\n' * 3, end='')  # Исправлено количество пустых строк
+        print('\n' * 3, end='')
 
-        # Инициализация массива S(30,60)
-        S = [[0 for _ in range(60)] for _ in range(30)]
+        # Set constants for L and G
+        L = random.randint(1, 60)  # Random cup position between 1 and 60
+        while L == 1 or L == 60:  # Ensure the cup is not at the extreme edges
+            L = random.randint(1, 60)
 
-        # Линии 30-40: Генерация позиции чашки L
-        while True:
-            L = int(60 * random.random()) + 1
-            if L != 1 and L != 60:
-                break
+        G = random.randint(1, 10)  # Random gravity between 1 and 10
 
-        # Линия 50: Генерация силы гравитации G
-        G = int(10 * random.random()) + 1
-
-        print(f"THE CUP IS 30 LINES DOWN AND {L:>3}  SPACES OVER.")
-        print(f"THE PULL OF GRAVITY IS {G:>2}  LINES/SECOND/SECDND.")
+        # Print game information
+        print(f"THE CUP IS 30 LINES DOWN AND {L} SPACES OVER.")
+        print(f"THE PULL OF GRAVITY IS {G} LINES/SECOND/SECDND.")
         print("WHAT IS THE PUSH YOU WOULD LIKE TO GIVE THE BALL")
-        print("ACROSS THE PAPER (IN SPACES/SECOND)", end='')
-        T = float(input())
+        print("ACROSS THE PAPER (IN SPACES/SECOND)? ", end='')
+        T_input = input()
+        try:
+            T = float(T_input)
+        except ValueError:
+            print("PLEASE ENTER A NUMBER.")
+            continue  # Return to the beginning of the loop to re-input
 
         print("THE RESULTS MAY TAKE ANYWHERE BETWEEN 30 AND 90 SECONDS.")
 
-        # Линия 120: Инициализация массива S
-        for S1 in range(30):
-            for S2 in range(60):
-                S[S1][S2] = 0
+        # Initialize array S(1..30,1..60) to match BASIC indexing
+        S = [[0] * 61 for _ in range(31)]  # S[0..30][0..60], we'll use S[1..30][1..60]
 
-        # Линия 130: Установка позиции чашки
-        # Корректировка индексов для Python (0-индексация)
+        # Set cup position
+        S[30][L] = 1
+        S[30][L - 1] = 1
+        S[30][L + 1] = 1
         S[29][L - 1] = 1
-        S[29][L - 2] = 1
-        S[29][L] = 1
-        S[28][L - 2] = 1
-        S[28][L] = 1
+        S[29][L + 1] = 1
 
-        # Линия 140: Основной цикл симуляции
+        # Initialize variables
+        W = 0  # Variable for result
         Z = 1.0
-        Z_max = math.sqrt(60 * G) / G
-        W = 0  # Инициализация переменной W
+        Z_max = ((60 * G) ** 0.5) / G
 
+        # Main simulation loop
         while Z <= Z_max:
             Y = T * Z * 2
             X = G / 2 * Z ** 2
 
             if X > 30.5 or X < 0.5 or Y > 60.5 or Y < 0.5:
-                break  # Переход на линию 300
+                break
 
             IX = int(X)
             IY = int(Y)
 
-            # Проверка попадания в чашку
-            if ((IX == 29 and IY == L - 1) or
-                    (IX + 1 == 29 and IY + 1 == L - 1) or
-                    (IX == 29 and IY == L - 2) or
-                    (IX + 1 == 29 and IY + 1 == L - 2)):
+            # Check for hitting the cup
+            if (IX == 29 and IY == L) or \
+                    (IX + 1 == 29 and IY + 1 == L) or \
+                    (IX == 29 and IY == L - 1) or \
+                    (IX + 1 == 29 and IY + 1 == L - 1):
                 W = 1
-                S[28][L - 1] = 2  # Линия 335
-                break  # Переход на линию 335
+                S[29][L] = 2
+                break
 
-            if ((IX == 29 and IY == L) or
-                    (IX + 1 == 29 and IY + 1 == L)):
+            if (IX == 29 and IY == L + 1) or \
+                    (IX + 1 == 29 and IY + 1 == L + 1):
                 W = 2
-                S[28][L - 1] = 2  # Линия 335
-                break  # Переход на линию 335
+                S[29][L] = 2
+                break
 
-            # Линия 240: Отметка позиции мяча
-            if 0 <= int(X) < 30 and 0 <= int(Y) < 60:
-                S[int(X)][int(Y)] = 2
+            # Mark the position of the ball in the array
+            if 1 <= IX <= 30 and 1 <= IY <= 60:
+                S[IX][IY] = 2
 
-            # Линии 250-280: Стирание следа за мячом
-            for D in range(1, 6):
-                if Y < 6:
-                    break  # Переход на линию 290
-                if int(Y) - D >= 0 and 0 <= int(X) < 30:
-                    S[int(X)][int(Y) - D] = 0
+            # Erase previous positions to simulate motion
+            if IY >= 6:
+                for D in range(1, 6):  # D from 1 to 5
+                    if IY - D >= 1:
+                        S[IX][IY - D] = 0
 
-            Z += 0.01  # Шаг цикла Z
+            Z += 0.01
 
-        # Линия 340: Если мяч не попал в чашку
-        if W == 0:
-            pass  # Ничего не делаем
-        # Линия 345: Продолжаем
+        # Restore the cup
+        S[30][L] = 1
+        S[30][L - 1] = 1
+        S[30][L + 1] = 1
+        S[29][L - 1] = 1
+        S[29][L + 1] = 1
 
+        # Output results
         P = " *."
 
-        # Восстановление чашки (линии 360-365)
-        S[29][L - 1] = 1
-        S[29][L - 2] = 1
-        S[29][L] = 1
-        S[28][L - 2] = 1
-        S[28][L] = 1
+        # We will print the trajectory first, then print the cup separately with a blank line in between
+        print()  # Add empty line before the trajectory
 
-        # Линии 370-510: Вывод поля
-        for X in range(30):
+        # Print trajectory (excluding the cup)
+        for X in range(1, 29):  # Up to line 28 (excluding cup at lines 29 and 30)
+            # Check for non-zero elements in the row
+            if all(S[X][Y] == 0 for Y in range(1, 61)):
+                continue  # Move to next row if entire row is empty
+
             line_output = ''
-            for Y in range(60):
-                if S[X][Y] != 0:
-                    # Линия 430: Вывод символа
-                    line_output += P[S[X][Y]]
+            for Y in range(1, 61):
+                line_output += P[S[X][Y]]
+            print(line_output.rstrip())
 
-                    # Логика для задержки вывода (опционально)
-                    # Здесь мы можем добавить логику для задержки, если необходимо
+        print()  # Add blank line before the cup
 
-            if line_output:
-                print(line_output)
+        # Print the cup (lines 29 and 30)
+        for X in range(29, 31):
+            # Fill with spaces to ensure the line is 60 characters long
+            line_output = ''
+            for Y in range(1, 61):
+                line_output += P[S[X][Y]]
+            print(line_output.ljust(60))  # Ensure the line is exactly 60 characters long
 
-        print()
+        print()  # Add blank line after the cup if needed
 
-        # Линии 530-600: Проверка результата и предложение сыграть снова
+        # Check result and offer to play again
         if W == 1:
             print("RIGHT IN!!!")
         elif W == 2:
             print("YOU ALMOST DIDN'T MAKE IT, BUT IT BOUNCED IN.")
         else:
             print("YOU MISSED; TRY AGAIN.")
-            continue  # Переход на линию 60
+            continue  # Start over
 
         print("DO YOU WANT TO PLAY AGAIN?")
         A = input()
         if A.strip().upper().startswith('Y'):
-            continue  # Переход на линию 30
+            continue  # Start over
         else:
-            break  # Конец игры
+            break  # End game
 
 
 if __name__ == "__main__":
