@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cup Game</title>
+    <title>Play Cup Game</title>
 </head>
 <body>
-    <h1>Welcome to the Cup Game!</h1>
+    <h1>Play Cup Game</h1>
+    <p style="white-space: pre-wrap">{{ text }}</p>
     <form action="/play" method="POST">
-        <input type="submit" value="Start Game">
+        <input type="text" name="direction" required>
+        <input type="submit" value="Enter">
     </form>
 </body>
 </html>
