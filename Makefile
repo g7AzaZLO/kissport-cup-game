@@ -37,6 +37,8 @@ linux:
 	@echo
 	@echo "Built file located in $(LINUX_OUTPUT)"
 	@echo
+	@echo "Start game"
+	@./output/linux/cup
 
 plan9:
 	@echo "Building for Plan9..."
