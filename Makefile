@@ -42,7 +42,7 @@ linux:
 
 android:
 	@echo "Building for Android..."
-	buildozer android debug
+	buildozer -v android debug
 	@echo "APK file is located in the bin/ directory."
 
 
@@ -50,4 +50,4 @@ clean:
 	@echo "Cleaning..."
 	python $(CLEANING_FILE)
 
-.PHONY: all windows linux web plan9 clean
+.PHONY: all windows linux web android clean
