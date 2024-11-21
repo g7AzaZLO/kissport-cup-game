@@ -40,15 +40,11 @@ linux:
 	@echo "Start game"
 	./output/linux/cup
 
-plan9:
-	@echo "Building for Plan9..."
-	@echo
-	@echo "Installing python for Plan9..."
-	@echo "Building binary with 9c compiler..."
-	cp $(PLAN9_SOURCE) $(PLAN9_OUTPUT)/cup.py
-	9c $(PLAN9_OUTPUT)/cup.py -o $(PLAN9_OUTPUT)/cup
-	@echo "Plan9 binary located at $(PLAN9_OUTPUT)/cup"
-	@echo
+android:
+	@echo "Building for Android..."
+	buildozer android debug
+	@echo "APK file is located in the bin/ directory."
+
 
 clean:
 	@echo "Cleaning..."
